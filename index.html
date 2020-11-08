@@ -1,0 +1,895 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>Artificial Intelligence and Search</title>
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/ntnuerc.css">
+
+        <!-- Theme used for syntax highlighting of code -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+        <script src="https://daybrush.com/scenejs/release/latest/dist/scene.min.js"></script>
+		
+        <!-- Printing and PDF exports -->
+        <script>
+            var link = document.createElement( 'link' );
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+        <script src="js/ntnu.js"></script>
+    </head>
+    <body>
+        <div class="reveal">
+        <div class="slides">
+            
+<section id="start" data-state="start">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Artificial Intelligence and Search</h1>
+
+<p>
+      Jacky Baltes<br>
+      National Taiwan Normal University<br>
+      Taipei, Taiwan<br>
+      <a href="mailto:jacky.baltes@ntnu.edu.tw">jacky.baltes@ntnu.edu.tw</a><br>
+</p>
+
+<class 'datetime.date'>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-86587f74-efd1-4bb9-ae39-21ebc6474b2f" ><span id="id-86587f74-efd1-4bb9-ae39-21ebc6474b2f"><img id="img-id-86587f74-efd1-4bb9-ae39-21ebc6474b2f"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-97605225-9b67-48e7-ad29-32e0cd6bbeac" ><span id="id-97605225-9b67-48e7-ad29-32e0cd6bbeac"><img id="img-id-97605225-9b67-48e7-ad29-32e0cd6bbeac" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00003_frag_00001" data-state="slide_00003_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>AI Problems</h1>
+
+<div class="jb-text">
+<ul>
+<li>Many problems in AI can be modeled or turn into search problems</li>
+<ul>
+<li>Puzzles (Logic puzzles, Sudoku, ...)</li>
+<li>Medical diagnosis (Searching for the set of deseases that cause the symptoms)</li>
+<li>Computer vision: search for the world model that can create the image</li>
+<li>Logistics: search for best way to move packages and trucks to their destination</li>
+<li>Machine learning: search for the model to explain the data</li>
+</ul>
+<li>About 1995: Search is the crux of AI<br>
+We can solve all AI problems if we can find a fast search method</li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-15363b5f-4a4c-42b6-bc4d-fd2afee8e42f" ><span id="id-15363b5f-4a4c-42b6-bc4d-fd2afee8e42f"><img id="img-id-15363b5f-4a4c-42b6-bc4d-fd2afee8e42f"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-a0c32265-e3a7-49ed-b639-c9c8ceb09d8f" ><span id="id-a0c32265-e3a7-49ed-b639-c9c8ceb09d8f"><img id="img-id-a0c32265-e3a7-49ed-b639-c9c8ceb09d8f" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00004_frag_00001" data-state="slide_00004_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+<div class="jb-input jb-render jb-code" style="text-align:center">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-input-code jb-render">
+<div style="font-size:0.5em"><!-- start of style="font-size:0.5em" -->
+<div class="highlight" style="background: #f8f8f8; color:#101010;display=inline-block;"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">is_valid</span>( table ):
+
+  <span style="color: #008000; font-weight: bold">if</span> ( table[<span style="color: #666666">0</span>] <span style="color: #666666">!=</span> <span style="color: #666666">1</span> ):
+    <span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000; font-weight: bold">False</span> 
+
+  <span style="color: #008000; font-weight: bold">for</span> bi <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #008000">len</span>(table)):
+    pi <span style="color: #666666">=</span> ( bi <span style="color: #666666">-</span> <span style="color: #666666">1</span> <span style="color: #666666">+</span> <span style="color: #008000">len</span>(table) ) <span style="color: #666666">%</span> <span style="color: #008000">len</span>(table) 
+    ni <span style="color: #666666">=</span> ( bi <span style="color: #666666">+</span> <span style="color: #666666">1</span> ) <span style="color: #666666">%</span> <span style="color: #008000">len</span>(table)
+
+    b <span style="color: #666666">=</span> table[bi]    
+    nb <span style="color: #666666">=</span> b <span style="color: #666666">+</span> <span style="color: #666666">1</span>
+    pb <span style="color: #666666">=</span> b <span style="color: #666666">-</span> <span style="color: #666666">1</span>
+
+
+    <span style="color: #008000; font-weight: bold">if</span> ( table[pi] <span style="color: #AA22FF; font-weight: bold">in</span> [ nb, pb] ) <span style="color: #AA22FF; font-weight: bold">or</span> ( table[ni] <span style="color: #AA22FF; font-weight: bold">in</span> [ nb, pb] ):
+      <span style="color: #408080; font-style: italic">#print(&quot;Failed&quot;, table, pi, bi, ni, nb, b, pb, table[pi], table[ni] )</span>
+      <span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000; font-weight: bold">False</span>
+    <span style="color: #008000; font-weight: bold">if</span> b <span style="color: #666666">==</span> <span style="color: #666666">3</span> <span style="color: #AA22FF; font-weight: bold">or</span> b <span style="color: #666666">==</span> <span style="color: #666666">5</span>:
+      <span style="color: #008000; font-weight: bold">if</span> ( table[pi] <span style="color: #AA22FF; font-weight: bold">in</span> [ <span style="color: #666666">3</span>, <span style="color: #666666">5</span>] ) <span style="color: #AA22FF; font-weight: bold">or</span> ( table[ni] <span style="color: #AA22FF; font-weight: bold">in</span> [ <span style="color: #666666">3</span>, <span style="color: #666666">5</span>] ):
+        <span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000; font-weight: bold">False</span>
+
+  <span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000; font-weight: bold">True</span>
+
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">all_permutations</span>( lst, level <span style="color: #666666">=</span> <span style="color: #666666">0</span> ):
+  <span style="color: #408080; font-style: italic">#print(&quot;  &quot; * level, f&#39;all_permutations({lst})&#39;)</span>
+  <span style="color: #008000; font-weight: bold">if</span> lst <span style="color: #666666">==</span> []:
+    <span style="color: #408080; font-style: italic">#print(&quot;  &quot; * level, f&#39;all_permutations({lst}) ==&gt; []&#39;)</span>
+    <span style="color: #008000; font-weight: bold">return</span> []
+  <span style="color: #008000; font-weight: bold">else</span>:
+    perms <span style="color: #666666">=</span> []
+    <span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #008000">len</span>(lst)):
+      rem <span style="color: #666666">=</span> all_permutations( lst[<span style="color: #666666">0</span>:i] <span style="color: #666666">+</span> lst[i<span style="color: #666666">+1</span>:], level <span style="color: #666666">+</span> <span style="color: #666666">1</span> )
+      <span style="color: #008000; font-weight: bold">if</span> <span style="color: #008000">len</span>(rem) <span style="color: #666666">&gt;</span> <span style="color: #666666">0</span>:
+        res <span style="color: #666666">=</span> [ [ lst[i] ] <span style="color: #666666">+</span> r <span style="color: #008000; font-weight: bold">for</span> r <span style="color: #AA22FF; font-weight: bold">in</span> rem ] 
+        <span style="color: #408080; font-style: italic">#print(&quot;  &quot; * level, f&#39;all_permutations({lst}) ==&gt;{res}&#39;)</span>
+        perms <span style="color: #666666">=</span> perms <span style="color: #666666">+</span> res
+      <span style="color: #008000; font-weight: bold">else</span>:
+        <span style="color: #408080; font-style: italic">#print(&quot;  &quot; * level, f&#39;all_permutations({lst}) ==&gt;{[lst[i]]}&#39;)</span>
+        perms<span style="color: #666666">.</span>append( [ lst[i] ] )
+    <span style="color: #008000; font-weight: bold">return</span> perms
+
+N_BROTHERS <span style="color: #666666">=</span> <span style="color: #666666">6</span>
+
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">bickering_brothers_slow</span>(n_brothers):
+  possible <span style="color: #666666">=</span> all_permutations([ x <span style="color: #008000; font-weight: bold">for</span> x <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #666666">1</span>,n_brothers<span style="color: #666666">+1</span>)])
+  count <span style="color: #666666">=</span> <span style="color: #666666">0</span>
+  <span style="color: #008000; font-weight: bold">for</span> p <span style="color: #AA22FF; font-weight: bold">in</span> possible:
+    count <span style="color: #666666">=</span> count <span style="color: #666666">+</span> <span style="color: #666666">1</span>
+    <span style="color: #408080; font-style: italic">#if is_valid(p):</span>
+    <span style="color: #408080; font-style: italic">#  print(&quot;Found solution&quot;, p )</span>
+  <span style="color: #008000; font-weight: bold">return</span> count
+
+<span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #666666">2</span>,<span style="color: #666666">9</span>):
+  count <span style="color: #666666">=</span> bickering_brothers_slow(i)
+  <span style="color: #008000">print</span>( <span style="color: #BA2121">f&quot;Number of checks with </span><span style="color: #BB6688; font-weight: bold">{</span>i<span style="color: #BB6688; font-weight: bold">}</span><span style="color: #BA2121"> brothers is </span><span style="color: #BB6688; font-weight: bold">{</span>count<span style="color: #BB6688; font-weight: bold">}</span><span style="color: #BA2121">&quot;</span>)
+</pre></div>
+
+</div><!-- end of style="font-size:0.5em" -->
+</div><!-- end of jb-input-code jb-render -->
+
+</div>
+<div class="jb-print jb-render">
+<div style="font-size:0.5em"><!-- start of style="font-size:0.5em" -->
+<div class="jb-output jb-render code" style="text-align:center">
+<div class="jb-stdout code" style="display:inline-block; width:90%">
+<pre style="font-size:0.5em">
+Number of checks with 2 brothers is 2
+Number of checks with 3 brothers is 6
+Number of checks with 4 brothers is 24
+Number of checks with 5 brothers is 120
+Number of checks with 6 brothers is 720
+Number of checks with 7 brothers is 5040
+Number of checks with 8 brothers is 40320
+</pre>
+</div>
+</div>
+
+</div><!-- end of style="font-size:0.5em" -->
+</div><!-- end of jb-print jb-render -->
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-3434cae9-7055-48f5-a8f3-5c77cc62cff0" ><span id="id-3434cae9-7055-48f5-a8f3-5c77cc62cff0"><img id="img-id-3434cae9-7055-48f5-a8f3-5c77cc62cff0"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-9f770c4d-4313-4837-b401-22922ef93be8" ><span id="id-9f770c4d-4313-4837-b401-22922ef93be8"><img id="img-id-9f770c4d-4313-4837-b401-22922ef93be8" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00005_frag_00001" data-state="slide_00005_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Find a Better Search</h1>
+
+<div class="jb-text">
+<ul>
+<li>My first implementation of the solution to the <a href="https://layton.fandom.com/wiki/Puzzle:Bickering_Brothers">Professor Layton - Bickering Brothers</a> problem 
+was not very efficient</li>
+<li>Wasted a lot of time during the search, because </li>
+<li>program checks all possibilites of assignments<li>
+<li>but if we make an assignment [1, 2, V, X, Y, Z ], then this is already not a solution</li>
+<li>it does not matter what we assign to V, X, Y, Z (3,4,5,6), (4,6,3,5), ...</li>
+<li>We waste 4! number of tries</li>
+<li>Our program could run 4!=24 times faster</li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-d68797d0-9cd9-43ad-a3c3-f416fc0ce244" ><span id="id-d68797d0-9cd9-43ad-a3c3-f416fc0ce244"><img id="img-id-d68797d0-9cd9-43ad-a3c3-f416fc0ce244"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-88b161cc-041b-4108-9034-157bde7b892d" ><span id="id-88b161cc-041b-4108-9034-157bde7b892d"><img id="img-id-88b161cc-041b-4108-9034-157bde7b892d" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00006_frag_00001" data-state="slide_00006_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Find a Better Search</h1>
+
+<div class="jb-text">
+<ul>
+<li>Change implementation to speed up the search</li>
+<li>Reject impossible assignments as quickly as possible</li>
+<li>Modify our search to check for illegal/impossible assignments as soon as possible</li>
+<li>Extend our <code>is_valid</code> to deal with uninstantiated/not assigned positions<li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-9745b1d5-9c5c-440d-ab53-154ba1b96548" ><span id="id-9745b1d5-9c5c-440d-ab53-154ba1b96548"><img id="img-id-9745b1d5-9c5c-440d-ab53-154ba1b96548"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-a6f38e84-3f68-45ae-a9d8-0e9a306b6ad4" ><span id="id-a6f38e84-3f68-45ae-a9d8-0e9a306b6ad4"><img id="img-id-a6f38e84-3f68-45ae-a9d8-0e9a306b6ad4" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00007_frag_00001" data-state="slide_00007_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+<div class="jb-input jb-render jb-code" style="text-align:center">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-input-code jb-render">
+<div style="font-size:0.5em"><!-- start of style="font-size:0.5em" -->
+<div class="highlight" style="background: #f8f8f8; color:#101010;display=inline-block;"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">timeit</span>
+
+NO_SOLUTION, SOLUTION, POSSIBLE_SOLUTION <span style="color: #666666">=</span> <span style="color: #666666">0</span>,<span style="color: #666666">1</span>,<span style="color: #666666">2</span>
+
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">is_valid</span>( table ):
+
+  <span style="color: #008000; font-weight: bold">if</span> (table[<span style="color: #666666">0</span>] <span style="color: #AA22FF; font-weight: bold">is</span> <span style="color: #AA22FF; font-weight: bold">not</span> <span style="color: #008000; font-weight: bold">None</span>) <span style="color: #AA22FF; font-weight: bold">and</span> ( table[<span style="color: #666666">0</span>] <span style="color: #666666">!=</span> <span style="color: #666666">1</span> ):
+    <span style="color: #008000; font-weight: bold">return</span> NO_SOLUTION
+
+  <span style="color: #008000; font-weight: bold">for</span> bi <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #008000">len</span>(table)):
+    pi <span style="color: #666666">=</span> ( bi <span style="color: #666666">-</span> <span style="color: #666666">1</span> <span style="color: #666666">+</span> <span style="color: #008000">len</span>(table) ) <span style="color: #666666">%</span> <span style="color: #008000">len</span>(table) 
+    ni <span style="color: #666666">=</span> ( bi <span style="color: #666666">+</span> <span style="color: #666666">1</span> ) <span style="color: #666666">%</span> <span style="color: #008000">len</span>(table)
+
+    b <span style="color: #666666">=</span> table[bi]
+    <span style="color: #008000; font-weight: bold">if</span> b <span style="color: #AA22FF; font-weight: bold">is</span> <span style="color: #AA22FF; font-weight: bold">not</span> <span style="color: #008000; font-weight: bold">None</span>:    
+      nb <span style="color: #666666">=</span> b <span style="color: #666666">+</span> <span style="color: #666666">1</span>
+      pb <span style="color: #666666">=</span> b <span style="color: #666666">-</span> <span style="color: #666666">1</span>
+
+
+      <span style="color: #008000; font-weight: bold">if</span> ( table[pi] <span style="color: #AA22FF; font-weight: bold">in</span> [ nb, pb] ) <span style="color: #AA22FF; font-weight: bold">or</span> ( table[ni] <span style="color: #AA22FF; font-weight: bold">in</span> [ nb, pb] ):
+        <span style="color: #408080; font-style: italic">#print(&quot;Failed&quot;, table, pi, bi, ni, nb, b, pb, table[pi], table[ni] )</span>
+        <span style="color: #008000; font-weight: bold">return</span> NO_SOLUTION
+      <span style="color: #008000; font-weight: bold">if</span> b <span style="color: #666666">==</span> <span style="color: #666666">3</span> <span style="color: #AA22FF; font-weight: bold">or</span> b <span style="color: #666666">==</span> <span style="color: #666666">5</span>:
+        <span style="color: #008000; font-weight: bold">if</span> ( table[pi] <span style="color: #AA22FF; font-weight: bold">in</span> [ <span style="color: #666666">3</span>, <span style="color: #666666">5</span>] ) <span style="color: #AA22FF; font-weight: bold">or</span> ( table[ni] <span style="color: #AA22FF; font-weight: bold">in</span> [ <span style="color: #666666">3</span>, <span style="color: #666666">5</span>] ):
+          <span style="color: #008000; font-weight: bold">return</span> NO_SOLUTION
+  <span style="color: #008000; font-weight: bold">if</span> <span style="color: #008000; font-weight: bold">None</span> <span style="color: #AA22FF; font-weight: bold">in</span> table:
+    <span style="color: #008000; font-weight: bold">return</span> POSSIBLE_SOLUTION
+  <span style="color: #008000; font-weight: bold">else</span>:
+    <span style="color: #008000; font-weight: bold">return</span> SOLUTION
+
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">bickering_brothers_csp</span>( n_brothers ):
+  initial <span style="color: #666666">=</span> [ <span style="color: #008000; font-weight: bold">None</span> ] <span style="color: #666666">*</span> n_brothers
+  queue <span style="color: #666666">=</span> []
+
+  queue<span style="color: #666666">.</span>append( (initial,<span style="color: #666666">0</span>) )
+  num_nodes <span style="color: #666666">=</span> <span style="color: #008000">len</span>(queue)
+
+  sols <span style="color: #666666">=</span> []
+  <span style="color: #008000; font-weight: bold">while</span>( <span style="color: #008000">len</span>(queue) <span style="color: #666666">&gt;</span> <span style="color: #666666">0</span> ):
+    current,level <span style="color: #666666">=</span> queue<span style="color: #666666">.</span>pop()
+    valid <span style="color: #666666">=</span> is_valid(current)
+    <span style="color: #008000; font-weight: bold">if</span> valid <span style="color: #666666">==</span> SOLUTION:
+      sols<span style="color: #666666">.</span>append( current)
+    <span style="color: #008000; font-weight: bold">elif</span> valid <span style="color: #666666">==</span> POSSIBLE_SOLUTION:    
+      <span style="color: #408080; font-style: italic">#print(&quot;   &quot; * level, current)</span>
+      <span style="color: #008000; font-weight: bold">for</span> bi <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #008000">len</span>(current)): <span style="color: #408080; font-style: italic">#-1,-1,-1):</span>
+        <span style="color: #008000; font-weight: bold">if</span> current[bi] <span style="color: #AA22FF; font-weight: bold">is</span> <span style="color: #008000; font-weight: bold">None</span>:
+          <span style="color: #008000; font-weight: bold">for</span> nb <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(n_brothers, <span style="color: #666666">0</span>,<span style="color: #666666">-1</span>):
+            <span style="color: #008000; font-weight: bold">if</span> nb <span style="color: #AA22FF; font-weight: bold">not</span> <span style="color: #AA22FF; font-weight: bold">in</span> current:
+              <span style="color: #008000">next</span> <span style="color: #666666">=</span> current<span style="color: #666666">.</span>copy()
+              <span style="color: #008000">next</span>[bi] <span style="color: #666666">=</span> nb
+              queue<span style="color: #666666">.</span>append( (<span style="color: #008000">next</span>,level<span style="color: #666666">+1</span>) )
+              num_nodes <span style="color: #666666">=</span> num_nodes <span style="color: #666666">+</span> <span style="color: #666666">1</span>
+          <span style="color: #008000; font-weight: bold">break</span>
+  <span style="color: #008000; font-weight: bold">return</span> num_nodes, sols
+
+num_nodes_slow <span style="color: #666666">=</span> <span style="color: #666666">0</span>
+num_nodes_csp <span style="color: #666666">=</span> <span style="color: #666666">0</span>
+
+<span style="color: #008000; font-weight: bold">for</span> n_brothers <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #666666">2</span>,<span style="color: #666666">9</span>):
+  time_slow <span style="color: #666666">=</span> timeit<span style="color: #666666">.</span>timeit( <span style="color: #BA2121">f&#39;bickering_brothers_slow( </span><span style="color: #BB6688; font-weight: bold">{</span>n_brothers<span style="color: #BB6688; font-weight: bold">}</span><span style="color: #BA2121"> )&#39;</span>, setup<span style="color: #666666">=</span><span style="color: #BA2121">&#39;from __main__ import bickering_brothers_slow&#39;</span>, number <span style="color: #666666">=</span> <span style="color: #666666">1</span> )
+  time_csp <span style="color: #666666">=</span> timeit<span style="color: #666666">.</span>timeit( <span style="color: #BA2121">f&#39;bickering_brothers_csp( </span><span style="color: #BB6688; font-weight: bold">{</span>n_brothers<span style="color: #BB6688; font-weight: bold">}</span><span style="color: #BA2121"> )&#39;</span>, setup<span style="color: #666666">=</span><span style="color: #BA2121">&#39;from __main__ import bickering_brothers_csp&#39;</span>, number <span style="color: #666666">=</span> <span style="color: #666666">1</span> )
+
+  <span style="color: #008000">print</span>( <span style="color: #BA2121">f&#39;Solutions for </span><span style="color: #BB6688; font-weight: bold">{</span>n_brothers<span style="color: #BB6688; font-weight: bold">}</span><span style="color: #BA2121"> time in </span><span style="color: #BB6688; font-weight: bold">{</span>time_csp<span style="color: #BB6688; font-weight: bold">}</span><span style="color: #BA2121"> tries, slow method </span><span style="color: #BB6688; font-weight: bold">{</span>time_slow<span style="color: #BB6688; font-weight: bold">}</span><span style="color: #BA2121">&#39;</span> )
+</pre></div>
+
+</div><!-- end of style="font-size:0.5em" -->
+</div><!-- end of jb-input-code jb-render -->
+
+</div>
+<div class="jb-print jb-render">
+<div style="font-size:0.5em"><!-- start of style="font-size:0.5em" -->
+<div class="jb-output jb-render code" style="text-align:center">
+<div class="jb-stdout code" style="display:inline-block; width:90%">
+<pre style="font-size:0.5em">
+Solutions for 2 time in 1.9093999071628787e-05 tries, slow method 2.2230000467970967e-05
+Solutions for 3 time in 2.1680998543160968e-05 tries, slow method 2.5719000404933468e-05
+Solutions for 4 time in 3.6891000490868464e-05 tries, slow method 7.500900028389879e-05
+Solutions for 5 time in 7.422199996653944e-05 tries, slow method 0.000370031999409548
+Solutions for 6 time in 0.0002808779991028132 tries, slow method 0.002242569000372896
+Solutions for 7 time in 0.001590873000168358 tries, slow method 0.015930297999148024
+Solutions for 8 time in 0.011600538000493543 tries, slow method 0.14150876999883621
+</pre>
+</div>
+</div>
+
+</div><!-- end of style="font-size:0.5em" -->
+</div><!-- end of jb-print jb-render -->
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-3a3804f7-c664-4dbe-92e6-e1f25e0b933c" ><span id="id-3a3804f7-c664-4dbe-92e6-e1f25e0b933c"><img id="img-id-3a3804f7-c664-4dbe-92e6-e1f25e0b933c"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-c739d555-b814-429a-8d68-202bcc830aa2" ><span id="id-c739d555-b814-429a-8d68-202bcc830aa2"><img id="img-id-c739d555-b814-429a-8d68-202bcc830aa2" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00008_frag_00001" data-state="slide_00008_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+<div class="jb-input jb-render jb-code" style="text-align:center">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-input-code jb-render">
+<div class="highlight" style="background: #f8f8f8; color:#101010;display=inline-block;"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">matplotlib.pyplot</span> <span style="color: #008000; font-weight: bold">as</span> <span style="color: #0000FF; font-weight: bold">plt</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">numpy</span> <span style="color: #008000; font-weight: bold">as</span> <span style="color: #0000FF; font-weight: bold">np</span>
+
+xs <span style="color: #666666">=</span> np<span style="color: #666666">.</span>arange(<span style="color: #666666">2</span>,<span style="color: #666666">11</span>)
+ys <span style="color: #666666">=</span> np<span style="color: #666666">.</span>zeros( ( <span style="color: #666666">2</span>, <span style="color: #008000">len</span>(xs) ) )
+
+<span style="color: #008000; font-weight: bold">for</span> xi <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #008000">len</span>(xs) ):
+  x <span style="color: #666666">=</span> xs[xi]
+  time_slow <span style="color: #666666">=</span> timeit<span style="color: #666666">.</span>timeit( <span style="color: #BA2121">f&#39;bickering_brothers_slow( </span><span style="color: #BB6688; font-weight: bold">{</span>x<span style="color: #BB6688; font-weight: bold">}</span><span style="color: #BA2121"> )&#39;</span>, setup<span style="color: #666666">=</span><span style="color: #BA2121">&#39;from __main__ import bickering_brothers_slow&#39;</span>, number <span style="color: #666666">=</span> <span style="color: #666666">1</span> )
+  time_csp <span style="color: #666666">=</span> timeit<span style="color: #666666">.</span>timeit( <span style="color: #BA2121">f&#39;bickering_brothers_csp( </span><span style="color: #BB6688; font-weight: bold">{</span>x<span style="color: #BB6688; font-weight: bold">}</span><span style="color: #BA2121"> )&#39;</span>, setup<span style="color: #666666">=</span><span style="color: #BA2121">&#39;from __main__ import bickering_brothers_csp&#39;</span>, number <span style="color: #666666">=</span> <span style="color: #666666">1</span> )
+  ys[<span style="color: #666666">0</span>, xi] <span style="color: #666666">=</span> time_slow
+  ys[<span style="color: #666666">1</span>, xi] <span style="color: #666666">=</span> time_csp
+
+fig <span style="color: #666666">=</span> plt<span style="color: #666666">.</span>figure( dpi<span style="color: #666666">=200</span> )
+ax <span style="color: #666666">=</span> fig<span style="color: #666666">.</span>add_subplot(<span style="color: #666666">1</span>,<span style="color: #666666">1</span>,<span style="color: #666666">1</span>)
+
+ax<span style="color: #666666">.</span>plot(xs,ys[<span style="color: #666666">0</span>,:], linewidth<span style="color: #666666">=3</span>, label<span style="color: #666666">=</span><span style="color: #BA2121">&quot;Slow Version&quot;</span> )
+ax<span style="color: #666666">.</span>plot(xs,ys[<span style="color: #666666">1</span>,:], linewidth<span style="color: #666666">=3</span>, label<span style="color: #666666">=</span><span style="color: #BA2121">&quot;CSP Version&quot;</span>)
+
+ax<span style="color: #666666">.</span>legend()
+
+g1 <span style="color: #666666">=</span> addJBFigure(<span style="color: #BA2121">&quot;g1&quot;</span>, <span style="color: #666666">0</span>, <span style="color: #666666">0</span>, fig )
+
+plt<span style="color: #666666">.</span>close()
+</pre></div>
+
+</div><!-- end of jb-input-code jb-render -->
+
+</div>
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-14347f47-c186-44f9-b27d-df50d2ba69a8" ><span id="id-14347f47-c186-44f9-b27d-df50d2ba69a8"><img id="img-id-14347f47-c186-44f9-b27d-df50d2ba69a8"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-950eae6d-cd6a-4440-8808-a126cc1dea9e" ><span id="id-950eae6d-cd6a-4440-8808-a126cc1dea9e"><img id="img-id-950eae6d-cd6a-4440-8808-a126cc1dea9e" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00009_frag_00001" data-state="slide_00009_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Runtime Comparison</h1>
+
+<span id="id-9a02e5bd-bad8-41d7-82b5-4791f844cb75" ><span id="id-9a02e5bd-bad8-41d7-82b5-4791f844cb75"><img id="img-id-9a02e5bd-bad8-41d7-82b5-4791f844cb75"     src="assets/images/g1.svg"/></span>
+</span>
+
+<div class="jb-text">
+<ul>
+<li>Smarter version runs much faster as problem size increases</li>
+<li>Even smart version however grows exponentially</li>
+<li>The huge improvement in AI has been largely due to running the same algorithms
+on faster graphics processing units (GPU)</li>
+<li>This does not overcome the computational complexity problem - so more complex
+vision problems can still not be solved</li>
+<li>Another big improvement in machine learning came from better and more training data</li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-f97f93e7-28af-4cd8-8d0a-54ade8ccc9d8" ><span id="id-f97f93e7-28af-4cd8-8d0a-54ade8ccc9d8"><img id="img-id-f97f93e7-28af-4cd8-8d0a-54ade8ccc9d8"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-ab1ba14a-65e5-4879-b069-d4ef78dddbe5" ><span id="id-ab1ba14a-65e5-4879-b069-d4ef78dddbe5"><img id="img-id-ab1ba14a-65e5-4879-b069-d4ef78dddbe5" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00010_frag_00001" data-state="slide_00010_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+<div class="jb-input jb-render jb-code" style="text-align:center">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-input-code jb-render">
+<div style="font-size:0.5em"><!-- start of style="font-size:0.5em" -->
+<div class="highlight" style="background: #f8f8f8; color:#101010;display=inline-block;"><pre style="line-height: 125%"><span></span><span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">graphviz</span> <span style="color: #008000; font-weight: bold">as</span> <span style="color: #0000FF; font-weight: bold">gv</span>
+
+NO_SOLUTION, SOLUTION, POSSIBLE_SOLUTION <span style="color: #666666">=</span> <span style="color: #666666">0</span>,<span style="color: #666666">1</span>,<span style="color: #666666">2</span>
+
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">is_valid</span>( table ):
+
+  <span style="color: #008000; font-weight: bold">if</span> (table[<span style="color: #666666">0</span>] <span style="color: #AA22FF; font-weight: bold">is</span> <span style="color: #AA22FF; font-weight: bold">not</span> <span style="color: #008000; font-weight: bold">None</span>) <span style="color: #AA22FF; font-weight: bold">and</span> ( table[<span style="color: #666666">0</span>] <span style="color: #666666">!=</span> <span style="color: #666666">1</span> ):
+    <span style="color: #008000; font-weight: bold">return</span> NO_SOLUTION
+
+  <span style="color: #008000; font-weight: bold">for</span> bi <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #008000">len</span>(table)):
+    pi <span style="color: #666666">=</span> ( bi <span style="color: #666666">-</span> <span style="color: #666666">1</span> <span style="color: #666666">+</span> <span style="color: #008000">len</span>(table) ) <span style="color: #666666">%</span> <span style="color: #008000">len</span>(table) 
+    ni <span style="color: #666666">=</span> ( bi <span style="color: #666666">+</span> <span style="color: #666666">1</span> ) <span style="color: #666666">%</span> <span style="color: #008000">len</span>(table)
+
+    b <span style="color: #666666">=</span> table[bi]
+    <span style="color: #008000; font-weight: bold">if</span> b <span style="color: #AA22FF; font-weight: bold">is</span> <span style="color: #AA22FF; font-weight: bold">not</span> <span style="color: #008000; font-weight: bold">None</span>:    
+      nb <span style="color: #666666">=</span> b <span style="color: #666666">+</span> <span style="color: #666666">1</span>
+      pb <span style="color: #666666">=</span> b <span style="color: #666666">-</span> <span style="color: #666666">1</span>
+
+      <span style="color: #008000; font-weight: bold">if</span> ( table[pi] <span style="color: #AA22FF; font-weight: bold">in</span> [ nb, pb] ) <span style="color: #AA22FF; font-weight: bold">or</span> ( table[ni] <span style="color: #AA22FF; font-weight: bold">in</span> [ nb, pb] ):
+        <span style="color: #408080; font-style: italic">#print(&quot;Failed&quot;, table, pi, bi, ni, nb, b, pb, table[pi], table[ni] )</span>
+        <span style="color: #008000; font-weight: bold">return</span> NO_SOLUTION
+      <span style="color: #008000; font-weight: bold">if</span> b <span style="color: #666666">==</span> <span style="color: #666666">3</span> <span style="color: #AA22FF; font-weight: bold">or</span> b <span style="color: #666666">==</span> <span style="color: #666666">5</span>:
+        <span style="color: #008000; font-weight: bold">if</span> ( table[pi] <span style="color: #AA22FF; font-weight: bold">in</span> [ <span style="color: #666666">3</span>, <span style="color: #666666">5</span>] ) <span style="color: #AA22FF; font-weight: bold">or</span> ( table[ni] <span style="color: #AA22FF; font-weight: bold">in</span> [ <span style="color: #666666">3</span>, <span style="color: #666666">5</span>] ):
+          <span style="color: #008000; font-weight: bold">return</span> NO_SOLUTION
+  <span style="color: #008000; font-weight: bold">if</span> <span style="color: #008000; font-weight: bold">None</span> <span style="color: #AA22FF; font-weight: bold">in</span> table:
+    <span style="color: #008000; font-weight: bold">return</span> POSSIBLE_SOLUTION
+  <span style="color: #008000; font-weight: bold">else</span>:
+    <span style="color: #008000; font-weight: bold">return</span> SOLUTION
+
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">bickering_brothers_csp</span>( n_brothers ):
+  initial <span style="color: #666666">=</span> [ <span style="color: #008000; font-weight: bold">None</span> ] <span style="color: #666666">*</span> n_brothers
+  queue <span style="color: #666666">=</span> []
+  g <span style="color: #666666">=</span> gv<span style="color: #666666">.</span>Digraph( comment<span style="color: #666666">=</span><span style="color: #BA2121">&#39;Depth First Search&#39;</span> )
+
+  queue<span style="color: #666666">.</span>append( (initial,<span style="color: #666666">0</span>, [] ) )
+  num_nodes <span style="color: #666666">=</span> <span style="color: #008000">len</span>(queue)
+  sols <span style="color: #666666">=</span> []
+  <span style="color: #008000; font-weight: bold">while</span>( <span style="color: #008000">len</span>(queue) <span style="color: #666666">&gt;</span> <span style="color: #666666">0</span> ):
+    current, level, parent <span style="color: #666666">=</span> queue<span style="color: #666666">.</span>pop()
+    valid <span style="color: #666666">=</span> is_valid(current)
+    <span style="color: #008000; font-weight: bold">if</span> valid <span style="color: #666666">==</span> SOLUTION:
+      sols<span style="color: #666666">.</span>append( current)
+      g<span style="color: #666666">.</span>node( <span style="color: #008000">str</span>(current), shape<span style="color: #666666">=</span><span style="color: #BA2121">&#39;box&#39;</span>)
+      <span style="color: #008000; font-weight: bold">if</span> parent <span style="color: #AA22FF; font-weight: bold">is</span> <span style="color: #AA22FF; font-weight: bold">not</span> <span style="color: #008000; font-weight: bold">None</span> <span style="color: #AA22FF; font-weight: bold">and</span> <span style="color: #008000">len</span>(parent) <span style="color: #666666">&gt;</span> <span style="color: #666666">0</span>:
+        g<span style="color: #666666">.</span>edge( <span style="color: #008000">str</span>(parent[<span style="color: #666666">-1</span>]), <span style="color: #008000">str</span>(current) )
+    <span style="color: #008000; font-weight: bold">elif</span> valid <span style="color: #666666">==</span> POSSIBLE_SOLUTION: 
+      g<span style="color: #666666">.</span>node( <span style="color: #008000">str</span>(current) )   
+      <span style="color: #008000; font-weight: bold">if</span> parent <span style="color: #AA22FF; font-weight: bold">is</span> <span style="color: #AA22FF; font-weight: bold">not</span> <span style="color: #008000; font-weight: bold">None</span> <span style="color: #AA22FF; font-weight: bold">and</span> <span style="color: #008000">len</span>(parent) <span style="color: #666666">&gt;</span> <span style="color: #666666">0</span>:
+        g<span style="color: #666666">.</span>edge( <span style="color: #008000">str</span>(parent[<span style="color: #666666">-1</span>]), <span style="color: #008000">str</span>(current) )
+      <span style="color: #408080; font-style: italic">#print(&quot;   &quot; * level, current)</span>
+      <span style="color: #008000; font-weight: bold">for</span> bi <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #008000">len</span>(current)): <span style="color: #408080; font-style: italic">#-1,-1,-1):</span>
+        <span style="color: #008000; font-weight: bold">if</span> current[bi] <span style="color: #AA22FF; font-weight: bold">is</span> <span style="color: #008000; font-weight: bold">None</span>:
+          <span style="color: #008000; font-weight: bold">for</span> nb <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(n_brothers, <span style="color: #666666">0</span>,<span style="color: #666666">-1</span>):
+            <span style="color: #008000; font-weight: bold">if</span> nb <span style="color: #AA22FF; font-weight: bold">not</span> <span style="color: #AA22FF; font-weight: bold">in</span> current:
+              <span style="color: #008000">next</span> <span style="color: #666666">=</span> current<span style="color: #666666">.</span>copy()
+              <span style="color: #008000">next</span>[bi] <span style="color: #666666">=</span> nb
+              queue<span style="color: #666666">.</span>append( (<span style="color: #008000">next</span>, level<span style="color: #666666">+1</span>, parent<span style="color: #666666">.</span>copy() <span style="color: #666666">+</span> [ current ] ) )              
+              num_nodes <span style="color: #666666">=</span> num_nodes <span style="color: #666666">+</span> <span style="color: #666666">1</span>
+          <span style="color: #008000; font-weight: bold">break</span>
+  <span style="color: #008000; font-weight: bold">return</span> num_nodes, sols, g
+
+num_nodes_slow <span style="color: #666666">=</span> <span style="color: #666666">0</span>
+num_nodes_csp <span style="color: #666666">=</span> <span style="color: #666666">0</span>
+
+n_brothers <span style="color: #666666">=</span> <span style="color: #666666">6</span>
+num_nodes, _ , g<span style="color: #666666">=</span> bickering_brothers_csp( n_brothers )
+<span style="color: #008000">print</span>( <span style="color: #BA2121">f&#39;Solutions for </span><span style="color: #BB6688; font-weight: bold">{</span>n_brothers<span style="color: #BB6688; font-weight: bold">}</span><span style="color: #BA2121"> number of nodes </span><span style="color: #BB6688; font-weight: bold">{</span>num_nodes<span style="color: #BB6688; font-weight: bold">}</span><span style="color: #BA2121">&#39;</span> )
+
+dfs1 <span style="color: #666666">=</span> addJBGraph( <span style="color: #BA2121">&quot;dfs1&quot;</span>, <span style="color: #666666">0</span>, <span style="color: #666666">0</span>, g )
+</pre></div>
+
+</div><!-- end of style="font-size:0.5em" -->
+</div><!-- end of jb-input-code jb-render -->
+
+</div>
+<div class="jb-print jb-render">
+<div style="font-size:0.5em"><!-- start of style="font-size:0.5em" -->
+<div class="jb-output jb-render code" style="text-align:center">
+<div class="jb-stdout code" style="display:inline-block; width:90%">
+<pre style="font-size:0.5em">
+Solutions for 6 number of nodes 80
+</pre>
+</div>
+</div>
+
+</div><!-- end of style="font-size:0.5em" -->
+</div><!-- end of jb-print jb-render -->
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-df3b728d-fdc0-428d-ba50-0d35f9709264" ><span id="id-df3b728d-fdc0-428d-ba50-0d35f9709264"><img id="img-id-df3b728d-fdc0-428d-ba50-0d35f9709264"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-52ed23dc-471f-4857-bc01-4dfb06c2aa1e" ><span id="id-52ed23dc-471f-4857-bc01-4dfb06c2aa1e"><img id="img-id-52ed23dc-471f-4857-bc01-4dfb06c2aa1e" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00011_frag_00001" data-state="slide_00011_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Depth First Search and Trees</h1>
+
+<span id="id-2e0d94b8-212c-4988-831a-dc8b0bb45a9e" ><span id="id-2e0d94b8-212c-4988-831a-dc8b0bb45a9e"><img id="img-id-2e0d94b8-212c-4988-831a-dc8b0bb45a9e"     src="assets/images/dfs1.svg"/></span>
+</span>
+
+
+<div class="jb-text">
+<ul>
+<li>Make one guess for a solution and then continues to try and expand it</li>
+<li>Search method goes down/deep as quickly as possible</li>
+<li>Search will expand left most child first</li>
+<li>Backtracking: If a node cannot be exanded to a solution/fails, then we must move up the tree to a previous node, which could
+still lead to a solution</li>
+</ul>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-f141c89d-0d15-4f40-9cf4-e2104e627054" ><span id="id-f141c89d-0d15-4f40-9cf4-e2104e627054"><img id="img-id-f141c89d-0d15-4f40-9cf4-e2104e627054"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-c7bd9a23-f870-4289-97d8-c6ed657930ea" ><span id="id-c7bd9a23-f870-4289-97d8-c6ed657930ea"><img id="img-id-c7bd9a23-f870-4289-97d8-c6ed657930ea" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+        </div>
+        </div>
+
+        <script src="js/reveal.js"></script>
+
+        <script>
+            // More info about config & dependencies:
+            // - https://github.com/hakimel/reveal.js#configuration
+            // - https://github.com/hakimel/reveal.js#dependencies
+            Reveal.initialize({
+                math: {
+                    mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+                    config: 'TeX-AMS_HTML-full',  // See http://docs.mathjax.org/en/latest/config-files.html
+                    // tex2jax: {
+                    //     inlineMath: [['$', '$'], ['\(', '\)']],
+                    //     displayMath: [['$$', '$$'], ['\[', '\]']],
+                    //     processEscapes: true,
+                    //     processEnvironments: true,
+                    //     skipTags: ['script', 'noscript', 'style', 'textarea', 'code', 'pre'],
+                    //     displayAlign: 'center',
+                    // }                
+                },
+                dependencies: [
+                    { src: 'plugin/markdown/marked.js' },
+                    { src: 'plugin/markdown/markdown.js' },
+                    { src: 'plugin/notes/notes.js', async: true },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/math/math.js', async: true }
+                ]
+            });
+        </script>
+
+        <script>
+            <!-- Assets -->
+var assets = {
+"robbi" : new JBImage( "robbi", "12677", "162", "138", null, null, "assets/images/robbi", "png" ),
+"logo" : new JBImage( "logo", "12033", "0", "0", null, null, "assets/images/logo", "png" ),
+"fira-logo-1" : new JBImage( "fira-logo-1", "93836", "0", "0", null, null, "assets/images/FIRA-logo-1", "png" ),
+"pairLogo" : new JBImage( "pairLogo", "63051", "0", "0", null, null, "assets/images/pairLogo", "png" ),
+"g1" : new JBImage( "g1", "26171", "0", "0", null, null, "assets/images/g1", "svg" ),
+"dfs1" : new JBImage( "dfs1", "27150", "0", "0", null, null, "assets/images/dfs1", "svg" ) 
+};
+var assetInstances = {
+    "id-97605225-9b67-48e7-ad29-32e0cd6bbeac": assets["robbi"],
+    "id-a0c32265-e3a7-49ed-b639-c9c8ceb09d8f": assets["robbi"],
+    "id-9f770c4d-4313-4837-b401-22922ef93be8": assets["robbi"],
+    "id-88b161cc-041b-4108-9034-157bde7b892d": assets["robbi"],
+    "id-a6f38e84-3f68-45ae-a9d8-0e9a306b6ad4": assets["robbi"],
+    "id-c739d555-b814-429a-8d68-202bcc830aa2": assets["robbi"],
+    "id-950eae6d-cd6a-4440-8808-a126cc1dea9e": assets["robbi"],
+    "id-ab1ba14a-65e5-4879-b069-d4ef78dddbe5": assets["robbi"],
+    "id-52ed23dc-471f-4857-bc01-4dfb06c2aa1e": assets["robbi"],
+    "id-c7bd9a23-f870-4289-97d8-c6ed657930ea": assets["robbi"],
+    "id-86587f74-efd1-4bb9-ae39-21ebc6474b2f": assets["logo"],
+    "id-15363b5f-4a4c-42b6-bc4d-fd2afee8e42f": assets["logo"],
+    "id-3434cae9-7055-48f5-a8f3-5c77cc62cff0": assets["logo"],
+    "id-d68797d0-9cd9-43ad-a3c3-f416fc0ce244": assets["logo"],
+    "id-9745b1d5-9c5c-440d-ab53-154ba1b96548": assets["logo"],
+    "id-3a3804f7-c664-4dbe-92e6-e1f25e0b933c": assets["logo"],
+    "id-14347f47-c186-44f9-b27d-df50d2ba69a8": assets["logo"],
+    "id-f97f93e7-28af-4cd8-8d0a-54ade8ccc9d8": assets["logo"],
+    "id-df3b728d-fdc0-428d-ba50-0d35f9709264": assets["logo"],
+    "id-f141c89d-0d15-4f40-9cf4-e2104e627054": assets["logo"],
+    "id-9a02e5bd-bad8-41d7-82b5-4791f844cb75": assets["g1"],
+    "id-2e0d94b8-212c-4988-831a-dc8b0bb45a9e": assets["dfs1"]
+};
+<!-- End of Assets -->
+
+            convertURLs(assetInstances, "smart-path");
+        </script>
+        <script>
+            <!-- Characters -->
+var characters =
+{};
+<!-- End of Characters -->
+
+        </script>
+    </body>
+</html>
